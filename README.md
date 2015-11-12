@@ -9,7 +9,7 @@ SlackAPIを利用しているので、tokenを発行できる権限がないと�
 ③ 適当なソースファイルを開き、適当な部分をドラッグとかShiftとかで選択  
 ④ メニューの「Slack help me＞」、もしくはツールバーにある怪しい＃アイコンをクリック  
 ⑤ 初回はtokenの設定画面になるので、以下の手順でSlackAPIのtokenを発行  
-　・https://api.slack.com/web　にアクセス  
+　・https://api.slack.com/web　 にアクセス  
 　・ページ一番下の「Authentication」のところにある「Create token」をクリック  
 　・tokenが発行されるので、コピーして設定画面に貼り付けて「OK」  
 ⑥ 投稿先のチャンネル(必須)、タイトル・コメント(任意) を選択/入力してOK  
