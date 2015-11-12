@@ -1,0 +1,2 @@
+# SlackHelpMe
+Slackにスニペットを投稿するEclipseプラグイン
