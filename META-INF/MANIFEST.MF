@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SlackHelpMe
+Bundle-SymbolicName: slackhelpme;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: slackhelpme.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text;bundle-version="3.10.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/org.eclipse.jface.text_3.10.0.v20150603-1752.jar,
+ lib/jackson-annotations-2.6.0.jar,
+ lib/jackson-databind-2.6.2.jar,
+ lib/jackson-core-2.6.3.jar

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+
+  <!-- メニューが選択されたときにロジックを実行するコマンドとハンドラ -->
+  <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="選択中のコードをSlackに投稿hoge"
+            id="SlackHelpMe.commands.command">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="SlackHelpMe.commands.command"
+            class="slackhelpme.handlers.SlackHelpMeHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="SlackHelpMe.commands.command"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+
+
+   <!-- 実行メニュー -->
+   <extension
+         point="org.eclipse.ui.menus">
+
+      <!-- メニューバー -->
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="Slack help me"
+               mnemonic="M"
+               id="SlackHelpMe.menus.menu">
+            <command
+                  commandId="SlackHelpMe.commands.command"
+                  mnemonic="S"
+                  id="SlackHelpMe.menus.command">
+            </command>
+         </menu>
+      </menuContribution>
+
+      <!-- ツールバー -->
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="SlackHelpMe.toolbars.toolbar">
+            <command
+                  commandId="SlackHelpMe.commands.command"
+                  icon="icons/slackhelpme.png"
+                  tooltip="選択中のコードをSlackに投稿"
+                  id="SlackHelpMe.toolbars.command">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+
+   <!-- ウィンドウ＞設定＞SlackHelpMe で設定する値の管理 -->
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="slackhelpme.preference.SlackHelpMePreferenceInitializer" />
+   </extension>
+ 
+ 
+   <!-- ウィンドウ＞設定＞SlackHelpMe で表示する設定ページ -->
+    <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="slackhelpme.preference.SlackHelpMePreferencePage"
+            id="slackhelpme.preference.page"
+            name="SlackHelpMe">
+      </page>
+   </extension>
+
+</plugin>
