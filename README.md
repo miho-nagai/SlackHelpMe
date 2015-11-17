@@ -3,7 +3,9 @@
 Slackにスニペットを投稿するEclipseプラグイン  
 開発中に「ここわかんないんだけど！」ってSlackで聞きたい時に便利かなと思い、作りました。  
 SlackAPIを利用しているので、tokenを発行できる権限がないと使えません。  
-
+  
+Eclipse 4.4Luna／4.5Marsで動作確認済み  
+  
 ##ただプラグインを実行したい場合
 ####インストール
 ① plugins/のjarを自分のeclipse/plugin　に入れる  
