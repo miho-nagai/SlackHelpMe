@@ -21,7 +21,7 @@ public class SlackHelpMePreferencePage  extends PreferencePage implements IWorkb
 
     @Override
     public void init(IWorkbench workbench) {
-        noDefaultButton();
+        noDefaultAndApplyButton();
 
         // tokenが未設定ならokボタンを非活性化
         String token = Activator.getDefault().getPreferenceStore().getString(SlackHelpMePreferenceInitializer.KEY_TOKEN);
