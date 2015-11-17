@@ -12,7 +12,7 @@ Eclipse 4.4Luna／4.5Marsで動作確認済み
 ② eclipseを起動する（既に起動している場合は再起動）  
 ####利用方法
 ① 適当なソースファイルを開き、適当な部分をドラッグとかShiftとかで選択  
-② メニューの「Slack help me＞」、もしくはツールバーにある怪しい＃アイコンをクリック  
+② メニューの「Slack help me＞選択中のコードをSlackに投稿」、もしくはツールバーにある怪しい＃アイコンをクリック  
 ③ 初回はtokenの設定画面になるので、以下の手順でSlackAPIのtokenを発行  
 　・https://api.slack.com/web　 にアクセス  
 　・ページ一番下の「Authentication」のところにある「Create token」をクリック  
