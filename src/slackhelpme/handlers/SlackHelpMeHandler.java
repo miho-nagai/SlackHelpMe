@@ -1,6 +1,6 @@
 package slackhelpme.handlers;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -59,7 +59,7 @@ public class SlackHelpMeHandler extends AbstractHandler {
 
                 try {
                     // チャンネル一覧を取得
-                    ArrayList<Channel> channelList = SlackApi.getChannels();
+                    List<Channel> channelList = SlackApi.getChannels();
 
                     // 送信設定ダイアログ表示
                     SlackPostDialog dialog = new SlackPostDialog(shell, selectedText, this, channelList);

@@ -1,6 +1,6 @@
 package slackhelpme.dialogs;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -26,14 +26,14 @@ import slackhelpme.model.Channel;
 public class SlackPostDialog extends Dialog {
 
     private SlackHelpMeHandler handler;
-    private ArrayList<Channel> channelList;
+    private List<Channel> channelList;
     private String code;
     private Combo channelCombo;
     private Text titleText;
     private Text commentText;
 
 
-    public SlackPostDialog(Shell parent, String codeText, SlackHelpMeHandler handler, ArrayList<Channel> channelList) {
+    public SlackPostDialog(Shell parent, String codeText, SlackHelpMeHandler handler, List<Channel> channelList) {
         super(parent);
         this.code = codeText;
         this.handler = handler;
