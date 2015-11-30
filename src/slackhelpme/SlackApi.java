@@ -1,20 +1,22 @@
 package slackhelpme;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import slackhelpme.model.Channel;
@@ -26,28 +28,35 @@ import slackhelpme.preference.SlackHelpMePreferenceInitializer;
 // SlackAPIにリクエストを投げる
 public class SlackApi {
 
-    private static final String API_GET_CHANNELS = "https://slack.com/api/channels.list?";
-    private static final String API_UPLOAD_FILE = "https://slack.com/api/files.upload?";
+    private static final String SLACK_HOST = "slack.com";
+    private static final String SLACK_API_PATH_GET_CHANNELS = "/api/channels.list";
+    private static final String SLACK_API_PATH_UPLOAD_FILE = "/api/files.upload";
 
 
     // Slackにファイルをアップロード
     public static void uploadFile(String text, String channel, String title, String comment,
             String fileName, String fileType) throws Exception {
 
-        // リクエストクエリ
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("token", getToken());
-        params.put("channels", channel);
-        params.put("content", text);
-        params.put("filename", fileName);
-        params.put("filetype", fileType);
-        params.put("title", title);
-        params.put("initial_comment", comment);
-        String url = API_UPLOAD_FILE + http_build_query(params);
+        // URI設定
+        URI uri = new URIBuilder()
+                .setScheme("https")
+                .setHost(SLACK_HOST)
+                .setPath(SLACK_API_PATH_UPLOAD_FILE)
+                .setParameter("token", getToken())
+                .setParameter("channels", channel)
+                .setParameter("content", text)
+                .setParameter("filename", fileName)
+                .setParameter("filetype", fileType)
+                .setParameter("title", title)
+                .setParameter("initial_comment", comment)
+                .build();
 
         // API叩く
-        String response = callApi(url);
+        String response = callApi(uri);
+
+        // jsonをモデルに
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         SlackResponse res = mapper.readValue(response, SlackResponse.class);
 
         if (!res.isOk()) {
@@ -58,14 +67,20 @@ public class SlackApi {
     // Slackの全チャンネルを取得
     public static List<Channel> getChannels() throws Exception {
 
-        // リクエストクエリ
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("token", getToken());
-        String url = API_GET_CHANNELS + http_build_query(params);
+        // URI設定
+        URI uri = new URIBuilder()
+                .setScheme("https")
+                .setHost(SLACK_HOST)
+                .setPath(SLACK_API_PATH_GET_CHANNELS)
+                .setParameter("token", getToken())
+                .build();
 
         // API叩く
-        String response = callApi(url);
+        String response = callApi(uri);
+
+        // jsonをモデルに
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         GetChannelsResponse res = mapper.readValue(response, GetChannelsResponse.class);
 
         if (!res.isOk()) {
@@ -76,42 +91,25 @@ public class SlackApi {
     }
 
     // 実際にAPIを叩く
-    private static String callApi(String url) throws Exception {
+    private static String callApi(URI uri) throws Exception {
 
-        URL connectUrl = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) connectUrl.openConnection();
-
-        if (con.getResponseCode() != 200) {
-            throw new Exception("SlackとのAPI接続に失敗しました。レスポンスコード:" + con.getResponseCode());
+        HttpUriRequest httpGet = new HttpGet(uri);
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpResponse response = client.execute(httpGet);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        } else {
+            throw new Exception("SlackとのAPI接続に失敗しました。レスポンスコード:" + response.getStatusLine().getStatusCode());
         }
 
-        // レスポンス値取得
-        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) sb.append(line);
-        br.close();
-
-        return sb.toString();
-    }
-
-    // クエリの組み立て（http://wauke.org/59 から拝借）
-    private static String http_build_query(Map<String, String> params) throws UnsupportedEncodingException {
-        String result = "";
-        for (Map.Entry<String, String> e : params.entrySet()) {
-            if (e.getKey().isEmpty()) continue;
-            if (!result.isEmpty()) result += "&";
-            result += URLEncoder.encode(e.getKey(), "UTF-8") + "=" +
-                      URLEncoder.encode(e.getValue(), "UTF-8");
-        }
-        return result;
+        return EntityUtils.toString(response.getEntity());
     }
 
     // 設定済みのtokenを取得する
     private static String getToken() throws Exception {
 
         // ウィンドウ＞設定＞SlackHelpMeに設定されているtoken値を取得
-        String token = Activator.getDefault().getPreferenceStore().getString(SlackHelpMePreferenceInitializer.KEY_TOKEN);
+        String token = Activator.getDefault().getPreferenceStore()
+                .getString(SlackHelpMePreferenceInitializer.KEY_TOKEN);
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
         // 未設定の場合は設定するまで延々と設定画面を開く

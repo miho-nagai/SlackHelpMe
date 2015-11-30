@@ -1,8 +1,5 @@
 package slackhelpme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown=true)
 // SlackAPIの基本的なJSONレスポンスを表すオブジェクト
 public class SlackResponse {
 
